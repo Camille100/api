@@ -7,6 +7,7 @@ import authRoute from './routes/authRoute.js';
 import userRoute from './routes/userRoute.js';
 import equipmentRoute from './routes/equipmentRoute.js';
 import dumpRoute from './routes/dumpRoute.js';
+import eventRoute from './routes/eventRoute.js';
 import { authenticateUser } from './middlewares/auth.js';
 
 const app = express();
@@ -23,6 +24,7 @@ app.use('/auth', authRoute);
 app.use('/user', authenticateUser, userRoute);
 app.use('/equipment', authenticateUser, equipmentRoute);
 app.use('/dump', authenticateUser, dumpRoute);
+app.use('/event', authenticateUser, eventRoute);
 
 app.get('/', (req, res) => {
   res.send('SERVER IS RUNNING')

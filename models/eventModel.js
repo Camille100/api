@@ -1,15 +1,11 @@
 import mongoose, { Schema } from 'mongoose';
-import { pointSchema } from './pointModel.js';
+import { polygonSchema } from './polygonModel.js';
 
-const dumpSchema = new Schema({
+const eventSchema = new Schema({
     creator: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
-    },
-    cleaner: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
     },
     comment: {
         type: String,
@@ -17,8 +13,16 @@ const dumpSchema = new Schema({
     },
     status: {
         type: String,
-        default: 'open',
+        enum: ['public', 'private'],
         required: true,
+    },
+    beginDate: {
+        type: Date,
+        required: true
+    },
+    endDate: {
+        type: Date,
+        required: true
     },
     equipments: [
         { type: mongoose.Schema.Types.ObjectId, ref: 'Equipment' }
@@ -34,11 +38,11 @@ const dumpSchema = new Schema({
         }
     },
     location: {
-        type: pointSchema,
+        type: polygonSchema,
         required: true
     },
-    pictures: [
-        { type: "String", required: true }
+    participants: [
+        { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
     ]
 }, {
     timestamps: {
@@ -47,6 +51,6 @@ const dumpSchema = new Schema({
     }
 });
 
-const Dump = mongoose.model('Dump', dumpSchema);
+const Event = mongoose.model('Event', eventSchema);
 
-export default Dump;
+export default Event;

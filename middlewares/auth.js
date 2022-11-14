@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const authenticateUser = (req, res, next) => {
-    console.log('bloup3');
+    // console.log('bloup3');
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 

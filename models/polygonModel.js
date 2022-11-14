@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 
-const polygonSchema = new Schema({
+export const polygonSchema = new Schema({
   type: {
     type: String,
     enum: ['Polygon'],
@@ -12,4 +12,4 @@ const polygonSchema = new Schema({
   }
 });
 
-export default polygonSchema;
+// export default polygonSchema;
