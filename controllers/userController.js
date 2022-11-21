@@ -26,6 +26,7 @@ export const getUser = async (req, res) => {
 
 export const getUsers = (req, res) => {
     User.find()
+    .select('pseudo email role created_at updated_at xp')
     .lean()
     .exec((err, users) => {
         if (err) return res.status(400).json(err);
@@ -33,7 +34,15 @@ export const getUsers = (req, res) => {
             return res.status(400).json({ error: 'No users found' });
         }
         else {
-            return res.status(200).json(users);
+            const formattedUsers = [];
+            users.forEach((user) => {
+                const userObj = {
+                    id: user._id,
+                    ...user
+                }
+                formattedUsers.push(userObj);
+            })
+            return res.status(200).json(formattedUsers);
         }
     })
 }

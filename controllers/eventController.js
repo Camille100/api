@@ -34,6 +34,7 @@ export const addEvent = async (req, res) => {
             ...req.body.accessible,
         },
         location: req.body.location,
+        center: req.body.center,
     });
 
     event.save()
@@ -63,4 +64,31 @@ export const getEvents = (req, res) => {
                 return res.status(200).json(events);
             }
         });
+};
+
+export const getEvent = async (req, res) => {
+    Event.findOne({ _id: req.params.eventId })
+        .populate([
+            {
+                path: 'equipments',
+                select: 'name',
+            },
+        ])
+        .lean()
+        .exec((err, event) => {
+            if (err) return res.status(400).json(err);
+            else if (event === null) {
+                return res.status(400).json({ error: 'No event found' });
+            } else {
+                return res.status(200).json(event);
+            }
+        });
+};
+
+export const updateEvent = (req, res) => {
+    
+};
+
+export const deleteEvent = (req, res) => {
+
 };
