@@ -8,6 +8,8 @@ import userRoute from './routes/userRoute.js';
 import equipmentRoute from './routes/equipmentRoute.js';
 import dumpRoute from './routes/dumpRoute.js';
 import eventRoute from './routes/eventRoute.js';
+import inviteRoute from './routes/inviteRoute.js';
+import notificationRoute from './routes/notificationRoute.js';
 import { authenticateUser } from './middlewares/auth.js';
 
 const app = express();
@@ -25,6 +27,8 @@ app.use('/user', authenticateUser, userRoute);
 app.use('/equipment', authenticateUser, equipmentRoute);
 app.use('/dump', authenticateUser, dumpRoute);
 app.use('/event', authenticateUser, eventRoute);
+app.use('/invite', authenticateUser, inviteRoute);
+app.use('/notification', authenticateUser, notificationRoute);
 
 app.get('/', (req, res) => {
   res.send('SERVER IS RUNNING')
