@@ -41,6 +41,9 @@ const eventSchema = new Schema({
         type: polygonSchema,
         required: true
     },
+    center: [
+        { type: Number, required: true }
+    ],
     participants: [
         { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
     ]

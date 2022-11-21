@@ -7,6 +7,25 @@ const dumpSchema = new Schema({
         ref: 'User',
         required: true
     },
+    cleaningDemands: [
+        {
+            cleaner: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+                required: true,
+            },
+            status: {
+                type: String,
+                default: 'waiting',
+                enum: ['waiting', 'accepted', 'refused']
+            },
+            pictures: [
+                {
+                    type: String
+                }
+            ]
+        }
+    ],
     cleaner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
@@ -18,6 +37,7 @@ const dumpSchema = new Schema({
     status: {
         type: String,
         default: 'open',
+        enum: ['open', 'waiting', 'closed'],
         required: true,
     },
     equipments: [
