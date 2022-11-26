@@ -4,6 +4,18 @@ import User from '../models/userModel.js';
 
 dotenv.config();
 
+export const addXp = (xp, userId) => {
+    User.findOneAndUpdate(
+        { _id: userId },
+        { $inc: { "xp": xp } },
+        { new: true })
+    .lean()
+    .exec((err, userUpdated) => {
+        if (err) return err;
+        return userUpdated;
+    })
+};
+
 export const getUser = async (req, res) => {
     User.findOne({ '_id': req.body.userId })
     .lean()
