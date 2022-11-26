@@ -29,7 +29,9 @@ export const getUser = async (req, res) => {
             id: user._id,
             email: user.email,
             pseudo: user.pseudo,
-            role: user.role
+            role: user.role,
+            xp: user.xp,
+            avatar: user.avatar
           }
             return res.status(200).json(userInfos);
         }

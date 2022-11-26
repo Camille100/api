@@ -144,7 +144,7 @@ export const updateDump = (req, res) => {
   });
 };
 
-export const addDumpCleaner = (req, res) => {
+export const addCleaningDemand = (req, res) => {
   Dump.findOneAndUpdate(
     {
       $and: [
@@ -240,6 +240,7 @@ export const updateCleaningDemand = (req, res) => {
               userId: [updatedDump.creator, updatedDump.cleaner],
               idDump: updatedDump._id
             }
+            addXp(150, updatedDump.cleaner);
             sendNotification(data).then((response) => {
               return res.status(200).json(updatedDump);
             })
