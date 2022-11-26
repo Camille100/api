@@ -66,6 +66,37 @@ export const getEvents = (req, res) => {
         });
 };
 
+export const getEventsByUser = (req, res) => {
+    Event.find({ $or: [ { creator: req.params.userId }, { participants: req.params.userId } ] })
+        .populate([
+            {
+                path: 'equipments',
+                select: 'name',
+            },
+        ])
+        .lean()
+        .exec((err, events) => {
+            console.log(events);
+            console.log(err);
+            if (err) return res.status(400).json(err);
+            else if (events.length === 0) {
+                return res.status(400).json({ error: 'No events found' });
+            } else {
+                const subscribedEvents = [];
+                const declaredEvents = [];
+                events.forEach((event) => {
+                    if (event.creator.toString() === req.params.userId.toString()) {
+                        declaredEvents.push(event);
+                    } else if (event.participants.includes(req.params.userId)) {
+                        subscribedEvents.push(event);
+                    }
+                })
+                const formatedEvents = {subscribedEvents, declaredEvents};
+                return res.status(200).json(formatedEvents);
+            }
+        });
+};
+
 export const getEvent = async (req, res) => {
     Event.findOne({ _id: req.params.eventId })
         .populate([
