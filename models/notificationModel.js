@@ -10,11 +10,11 @@ const notificationSchema = new Schema({
         default: false,
         required: true
     },
-    idUser: {
+    idUser: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
-    },
+    }],
     idDump: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Dump'

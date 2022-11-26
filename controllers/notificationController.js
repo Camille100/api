@@ -1,8 +1,44 @@
 /* eslint-disable no-unused-vars */
 import dotenv from 'dotenv';
 import Notification from '../models/notificationModel.js';
+import User from '../models/userModel.js';
 
 dotenv.config();
+
+export const sendNotificationToAdmin = (data) => {
+    User.find({ role: 'admin' })
+    .select('_id')
+    .lean()
+    .exec((error, adminArr) => {
+        if (error) return error;
+        if (adminArr.length === 0) return 'No administrators found'
+        const notification = new Notification({
+            content: data.message,
+            seen: false,
+            idUser: adminArr,
+            idDump: data.idDump,
+            idEvent: data.idEvent,
+            idInvite: data.idInvite
+        })
+        return notification.save()
+        .then((res) => res)
+        .catch((err) => err);
+    })
+}
+
+export const sendNotification = (data) => {
+    const notification = new Notification({
+        content: data.message,
+        seen: false,
+        idUser: data.userArr,
+        idDump: data.idDump,
+        idEvent: data.idEvent,
+        idInvite: data.idInvite
+    })
+    return notification.save()
+    .then((res) => res)
+    .catch((err) => err);
+}
 
 export const addNotification = async (req, res) => {
 
