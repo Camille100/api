@@ -32,6 +32,7 @@ export const register = async (req, res) => {
             password,
             role: 'user',
             xp: 0,
+            avatar: user.avatar
         })
         user.save()
             .then((response) => {
@@ -72,6 +73,8 @@ export const login = (req, res) => {
                   pseudo: user.pseudo,
                   id: user._id,
                   role: user.role,
+                  xp: user.xp,
+                  level: user.level,
                   ...auth
                 });
               })
