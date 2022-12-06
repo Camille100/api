@@ -25,8 +25,8 @@ app.use(cookieParser());
 app.use('/auth', authRoute);
 app.use('/user', authenticateUser, userRoute);
 app.use('/equipment', authenticateUser, equipmentRoute);
-app.use('/dump', authenticateUser, dumpRoute);
-app.use('/event', authenticateUser, eventRoute);
+app.use('/dump', dumpRoute);
+app.use('/event', eventRoute);
 app.use('/invite', authenticateUser, inviteRoute);
 app.use('/notification', authenticateUser, notificationRoute);
 
