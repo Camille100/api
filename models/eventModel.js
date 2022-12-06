@@ -25,7 +25,10 @@ const eventSchema = new Schema({
         required: true
     },
     equipments: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'Equipment' }
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Equipment'
+        }
     ],
     accessible: {
         onFoot: {
@@ -45,7 +48,15 @@ const eventSchema = new Schema({
         { type: Number, required: true }
     ],
     participants: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+        { 
+            userId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User'
+            },
+            present: {
+                type: Boolean,
+            }
+        }
     ]
 }, {
     timestamps: {
