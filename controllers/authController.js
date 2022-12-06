@@ -22,7 +22,6 @@ export const register = async (req, res) => {
     User.findOne({ email: req.body.email })
     .lean()
     .exec(async (error, user) => {
-      console.log(user);
       if (error) return res.status(400).json(error);
       else if (user === null) {
         const password = await bcrypt.hash(req.body.password, 10);
@@ -74,12 +73,11 @@ export const login = (req, res) => {
                   id: user._id,
                   role: user.role,
                   xp: user.xp,
-                  level: user.level,
                   ...auth
                 });
               })
             } else {
-              return res.status(401).json({error: 'Unauthorized'});
+              return res.status(403).json({error: 'Unauthorized'});
             }
         })
     })
@@ -87,16 +85,12 @@ export const login = (req, res) => {
 
 export const refreshToken = (req, res) => {
   let refreshToken = req.cookies.refreshToken;
-  // console.log(refreshToken);
   const id = jwtDecode(refreshToken).id;
   if (refreshToken === null) return res.status(401).json({ error: 'Unauthorized' });
-  // console.log('bloup1');
   User.findOne({ _id: id })
   .exec((err, userFound) => {
-      // console.log(userFound);
     if (err) return res.status(400).json(err);
     if (userFound === null) return res.status(401).json({ error: 'Unauthorized' });
-    // console.log('bloup2');
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (errToken, user) => {
       if (errToken) return res.status(403).json(errToken);
 
