@@ -50,7 +50,6 @@ export const addDump = async (req, res) => {
       return res.status(201).json(response);
     })
     .catch((err) => {
-      console.log(err);
       res.status(400).json(err);
     });
 };
@@ -145,6 +144,13 @@ export const updateDump = (req, res) => {
 };
 
 export const addCleaningDemand = (req, res) => {
+  if (req.body.dumpId === undefined || req.body.cleaningDemand === undefined) {
+    return res.status(400).json({ error: "missing parameters" });
+  }
+  if ( typeof req.body.cleaningDemand !== 'object' || typeof req.body.dumpId !== 'string') {
+    return res.status(400).json({ error: "invalid parameters" });
+  }
+
   Dump.findOneAndUpdate(
     {
       $and: [
@@ -165,13 +171,11 @@ export const addCleaningDemand = (req, res) => {
     if (err) return res.status(400).json(err);
     if (updated === null) return res.status(400).json({ error: 'Echec de la demande' })
     else {
-      console.log(updated);
       const data = {
         message: 'Votre décharge est en cours de nettoyage',
         idUser: [updated.creator],
         idDump: updated._id
       }
-      console.log(data)
       sendNotification(data).then((response) => {
         return res.status(200).json(updated);
       })
@@ -180,6 +184,12 @@ export const addCleaningDemand = (req, res) => {
 };
 
 export const updateCleaningDemand = (req, res) => {
+  if (req.params.cleaningDemandId === undefined
+    || typeof req.params.cleaningDemandId !== 'string'
+    || req.body.cleanerId === undefined
+    || typeof req.body.cleanerId !== 'string') {
+    return res.status(400).json({ error: 'Paramètres manquants ou non valides' })
+  }
   if (req.body.status === 'accepted') {
     Dump.findOne({
       $and: [
@@ -198,6 +208,7 @@ export const updateCleaningDemand = (req, res) => {
       .lean()
       .exec((err, dump) => {
         if (err) return res.status(400).json(err);
+        if (dump === null) return res.status(400).json({ error: 'Décharge non trouvée' });
         const demandsArr = [];
         dump.cleaningDemands.forEach((demand) => {
           const demandObj = {
@@ -237,7 +248,7 @@ export const updateCleaningDemand = (req, res) => {
             if (error) return res.status(400).json(error);
             const data = {
               message: 'Nettoyage de la décharge validé',
-              userId: [updatedDump.creator, updatedDump.cleaner],
+              idUser: [updatedDump.creator, updatedDump.cleaner],
               idDump: updatedDump._id
             }
             addXp(150, updatedDump.cleaner);
@@ -268,10 +279,11 @@ export const updateCleaningDemand = (req, res) => {
       .lean()
       .exec((err, updated) => {
         if (err) return res.status(400).json(err);
+        if (updated === null) return res.status(400).json({ error: 'décharge non trouvée' });
         return res.status(200).json(updated);
       })
   } else {
-    return res.status(400).json({ error: 'Status not valid' });
+    return res.status(400).json({ error: 'Statut non valide' });
   }
 };
 
