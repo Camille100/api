@@ -30,7 +30,7 @@ export const sendNotification = (data) => {
     const notification = new Notification({
         content: data.message,
         seen: false,
-        idUser: data.userArr,
+        idUser: data.idUser,
         idDump: data.idDump,
         idEvent: data.idEvent,
         idInvite: data.idInvite
@@ -80,8 +80,22 @@ export const getNotifications = (req, res) => {
     })
 }
 
+export const getNotificationsByUser = (req, res) => {
+    Notification.find({ idUser: req.params.userId })
+    .lean()
+    .exec((err, notifications) => {
+        if (err) return res.status(400).json(err);
+        else if (notifications.length === 0) {
+            return res.status(400).json({ error: 'No notifications found' });
+        }
+        else {
+            return res.status(200).json(notifications);
+        }
+    })
+}
+
 export const updateNotification = (req, res) => {
-    Notification.updateOne({ _id: req.body.notificationId }, { $set: { ...req.body.notificationData } })
+    Notification.updateOne({ _id: req.params.notificationId }, { ...req.body })
     .exec((err, updated) => {
         if (err) return res.status(400).json(err);
         else {
