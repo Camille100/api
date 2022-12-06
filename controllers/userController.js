@@ -61,6 +61,34 @@ export const getUsers = (req, res) => {
     })
 }
 
+export const searchUser = (req, res) => {
+    if (typeof req.body.search !== 'string' || req.body.search === undefined || req.body.search === null) {
+        return res.status(400).json({ error: 'Unauthorized search' })
+    }
+    User.find({
+        $or: [
+            { "email": {"$regex": req.body.search, "$options": "i"} },
+            { "pseudo": {"$regex": req.body.search, "$options": "i"} }
+        ]
+    })
+    .limit(3)
+    .lean()
+    .exec((err, users) => {
+        if (err) return res.status(400).json(err);
+        else if(users.length === 0) return res.status(400).json({ error: 'No users found' });
+        else {
+            const formatedUsers = [];
+            users.forEach((user) => {
+                formatedUsers.push({
+                    id: user._id,
+                    email: user.email,
+                })
+            });
+            return res.status(200).json(formatedUsers);
+        }
+    })
+}
+
 export const updateUser = (req, res) => {
     User.updateOne({ _id: req.body.userId }, { $set: { ...req.body.userData } })
     .exec((err, updated) => {
